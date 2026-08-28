@@ -1,0 +1,190 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="line_following_world">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- Gazebo Sim Systems Plugins -->
+    <plugin name="gz::sim::systems::Physics" filename="gz-sim-physics-system"/>
+    <plugin name="gz::sim::systems::UserCommands" filename="gz-sim-user-commands-system"/>
+    <plugin name="gz::sim::systems::SceneBroadcaster" filename="gz-sim-scene-broadcaster-system"/>
+    <plugin name="gz::sim::systems::Sensors" filename="gz-sim-sensors-system">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- Environmental Illumination -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+    </light>
+
+    <!-- Ground Plane Surface -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.6 0.6 0.6 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Multi-Turn Closed Loop Track (Fixed Geometry & Continuous) -->
+    <model name="loop_track">
+      <static>true</static>
+
+      <!-- Segment 1: Main Start Straight -->
+      <link name="seg_1">
+        <pose>5.0000 0.0000 0.005 0 0 0.0000</pose>
+        <visual name="v1"><geometry><box><size>10.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 2: Soft 45-degree Left Turn (Part A) -->
+      <link name="seg_2">
+        <pose>11.4142 1.4142 0.005 0 0 0.7854</pose>
+        <visual name="v2"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 3: Straight Section after 45 -->
+      <link name="seg_3">
+        <pose>12.8284 4.8284 0.005 0 0 1.5708</pose>
+        <visual name="v3"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 4: Sharp 90-degree Left Turn -->
+      <link name="seg_4">
+        <pose>10.8284 6.8284 0.005 0 0 3.1416</pose>
+        <visual name="v4"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 5: Back-S-Curve Right Turn -->
+      <link name="seg_5">
+        <pose>8.8284 8.8284 0.005 0 0 1.5708</pose>
+        <visual name="v5"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 6: Long Upper Straight -->
+      <link name="seg_6">
+        <pose>3.8284 10.8284 0.005 0 0 3.1416</pose>
+        <visual name="v6"><geometry><box><size>10.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 7: Left Turn Downwards -->
+      <link name="seg_7">
+        <pose>-1.1716 8.8284 0.005 0 0 -1.5708</pose>
+        <visual name="v7"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 8: Inner Loop Chicane Left -->
+      <link name="seg_8">
+        <pose>0.8284 6.8284 0.005 0 0 0.0000</pose>
+        <visual name="v8"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 9: Inner Loop Chicane Right -->
+      <link name="seg_9">
+        <pose>2.8284 4.3284 0.005 0 0 -1.5708</pose>
+        <visual name="v9"><geometry><box><size>5.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 10: Lower Bottom Corner Approach -->
+      <link name="seg_10">
+        <pose>0.8284 1.8284 0.005 0 0 3.1416</pose>
+        <visual name="v10"><geometry><box><size>4.0000 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 11: Final Return Corner Link -->
+      <link name="seg_11">
+        <pose>-1.1716 0.9142 0.005 0 0 -1.5708</pose>
+        <visual name="v11"><geometry><box><size>1.8284 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+
+      <!-- Segment 12: Loop Closing Segment -->
+      <link name="seg_12">
+        <pose>-0.5858 0.0000 0.005 0 0 0.0000</pose>
+        <visual name="v12"><geometry><box><size>1.1716 0.2 0.001</size></box></geometry>
+        <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- PID Line Following Vehicle -->
+    <model name="pid_vehicle">
+      <pose>0 0 0.25 0 0 0</pose> 
+      <link name="chassis">
+        <inertial>
+          <mass>150.0</mass>
+          <inertia>
+            <ixx>5.0</ixx><ixy>0.0</ixy><ixz>0.0</ixz>
+            <iyy>12.0</iyy><iyz>0.0</iyz>
+            <izz>15.0</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>1.0 0.6 0.4</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>1.0 0.6 0.4</size></box></geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+          </material>
+        </visual>
+        
+        <!-- Front Mounted Tracking Camera Sensor (Optimized FOV) -->
+        <sensor name="front_camera" type="camera">
+          <pose>0.5 0 0.4 0 0.4363 0</pose> <!-- Raised height, pitched down ~25 deg -->
+          <topic>front_camera</topic>
+          <update_rate>60</update_rate> <!-- Increased frequency for fast motion -->
+          <camera>
+            <horizontal_fov>2.0944</horizontal_fov> <!-- Widened FOV to 75 degrees -->
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.05</near> <!-- Closer clipping boundary to capture ground near bumper -->
+              <far>100</far>
+            </clip>
+          </camera>
+        </sensor>
+      </link>
+
+      <!-- Velocity Control Plugin Setup -->
+      <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl">
+        <topic>/cmd_vel</topic>
+      </plugin>
+    </model>
+  </world>
+</sdf>
